@@ -7,5 +7,6 @@
                  start-page="welcome-to-ubat.md">
 
     <toc-element topic="welcome-to-ubat.md"/>
+    <toc-element topic="install-on-prem.md"/>
     <toc-element topic="run-the-cli.md"/>
 </instance-profile>
