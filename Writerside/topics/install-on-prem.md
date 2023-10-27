@@ -102,15 +102,14 @@ This file will require a few changes!
 <procedure>
 <p>Configuring the host</p>
 <step>Install a compatible container runtime on the host</step>
-<step>Create the ubat container network</step>
-<step>Set postgresql username and password</step>
-<step>Set rabbitmq username and password</step>
-<step>Update the infrastructure docker compose file to include both postgresql and rabbitmq user credentials</step>
-<step>Create a folder on the host to store postgresql data</step>
-<step>Create a folder on the host to store rabbitmq data</step>
-<step>Update the infrastructure docker compose file to include the paths of the previously created folders</step>
+<step>Create the <code>ubat</code> container network with <code> docker network create ubat </code></step>
+<step>Create <code>postgresql</code> and <code>reabbitmq</code> passwords</step>
+<step>Create a folder on the host to store <code>postgresql</code> data</step>
+<step>Update the <code>postgresql</code> container volume to the host path</step>
+<step>Create a folder on the host to store <code>reabbitmq</code> data</step>
+<step>Update the <code>rabbitmq</code> container volume to the host path</step>
 <step>Run the infrastructure docker compose file</step>
-<step>Configure <a anchor="configuring-infra-services">the infrastructure services</a></step>
+<step>Finish the host configuration by <a anchor="configuring-infra-services"></a></step>
 </procedure>
 
 
