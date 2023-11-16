@@ -2,7 +2,11 @@
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <variables></variables>
+    <variables>
+        <color-preset>vivid</color-preset>
+        <primary-color>dracula</primary-color>
+        <header-logo>ubat.svg</header-logo>
+    </variables>
     <build-profile instance="u1">
         <variables>
             <noindex-content>true</noindex-content>
