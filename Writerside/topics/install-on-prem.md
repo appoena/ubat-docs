@@ -61,12 +61,17 @@ The host also requires to have internet access to download images and outbound t
 > future as we introduce new features into the product
 > {style="note"}
 
-## Environment Variables {id="environment-variables"}
+
+## Environment Variables {id="infra-environment-variables"}
 
 <table id="application-environment-variable" style="header-row">
 <tr>
     <td>Env</td>
     <td>Description</td>
+</tr>
+<tr>
+    <td>EXTERNAL_ADDRESS</td>
+    <td>The external address of the spa</td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_USER</td>
@@ -125,6 +130,7 @@ The host also requires to have internet access to download images and outbound t
 > The usage of docker volumes is discouraged due to potentially causing data losses
 > {style="warning"}
 
+
 The deployment of the %product% is divided into two docker compose files 
 or a single compose with all the necessary components.
 
@@ -139,14 +145,18 @@ This file will require a few changes!
 <p>Configuring the host</p>
 <step>Install a compatible container runtime on the host</step>
 <step>Create the <code>ubat</code> container network with <code> docker network create ubat </code></step>
-<step>Create <code>postgresql</code> and <code>reabbitmq</code> passwords</step>
+<step>Create <code>postgresql</code> and <code>rabbitmq</code> passwords</step>
 <step>Create a folder on the host to store <code>postgresql</code> data</step>
 <step>Update the <code>postgresql</code> container volume to the host path</step>
-<step>Create a folder on the host to store <code>reabbitmq</code> data</step>
+<step>Create a folder on the host to store <code>rabbitmq</code> data</step>
 <step>Update the <code>rabbitmq</code> container volume to the host path</step>
 <step>Run the infrastructure docker compose file</step>
 <step>Finish the host configuration by <a anchor="configuring-infra-services"></a></step>
 </procedure>
+
+> Verify all directories created are accessible by the containers
+> {style="warning"}
+
 
 ### Configuring the infrastructure services {id="configuring-infra-services"}
 
