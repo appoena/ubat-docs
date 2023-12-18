@@ -1,8 +1,7 @@
 # Installing %product%
 
 The %product% application is a software that runs on your host. It is responsible for executing the analysis of your log
-events and
-lines and generating a report that can be accessed using the UI.
+events and lines and generating a report that can be accessed using the UI.
 
 The beck-end and front-end (ui) services are packaged as container images, they support both `dockerd` and `containerd`
 runtimes.
@@ -54,116 +53,326 @@ You can see the average resource usage of our tests below:
 > For the application we recommend using an `c5.xlarge (4 VCPUs / 8GB RAM)` instance or equivalent for production
 > environments
 
-The host also requires to have internet access to download images and outbound traffic must be able to use ports
-`80`, `443`, `7148` and `7149` to reach our authentication and authorization endpoints.
+### Network Requirements
+
+The host requires to have internet access to download images. It also requires to have outbound traffic to
+go through four different ports in order to reach our authentication and authorization endpoints.
+
+Host outbound traffic ports:
+
+- `80`
+- `443`
+- `7148`
+- `7149`
+
+The inbound traffic flows through three different ports. These can be changed in the docker compose file.
+
+Default host inbound traffic ports:
+
+- `3000`
+- `7001`
+- `7002`
 
 > The hardware requirements may increase in the
 > future as we introduce new features into the product
 > {style="note"}
 
+## Components {id="components"}
 
-## Environment Variables {id="infra-environment-variables"}
+### Backend {id="backend"}
 
-<table id="application-environment-variable" style="header-row">
+The backend is built using dotnet 7, and it is responsible for executing the analysis and compiling the results into
+meaningful report.
+
+#### Environment Variables {id="backend-env-vars"}
+
+<table id="backend-environment-variables" style="header-row">
 <tr>
-    <td>Env</td>
+    <td>Variable</td>
     <td>Description</td>
-</tr>
-<tr>
-    <td>EXTERNAL_ADDRESS</td>
-    <td>The external address of the spa</td>
+    <td>Default</td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_USER</td>
-    <td>The rabbitmq user (requires write on '/' vhost)</td>
+    <td>The rabbitmq user (requires write on vhost)</td>
+    <td><code>rabbitmq</code></td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_PASSWORD</td>
     <td>The rabbitmq user password</td>
+    <td>-</td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_VHOST</td>
-    <td>The rabbitmq virtual host (defaults to /)</td>
+    <td>The rabbitmq virtual host</td>
+    <td><code>/</code></td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_PORT</td>
     <td>The rabbitmq port</td>
+    <td><code>5672</code></td>
 </tr>
 <tr>
     <td>COL_RABBITMQ_HOST</td>
     <td>The rabbitmq host address</td>
+    <td><code>localhost</code></td>
 </tr>
 <tr>
     <td>COL_POSTGRES_USER</td>
     <td>The postgres user</td>
+    <td><code>postgres</code></td>
 </tr>
 <tr>
     <td>COL_POSTGRES_PASSWORD</td>
     <td>The postgres user password</td>
+    <td>-</td>
 </tr>
 <tr>
     <td>COL_POSTGRES_DATABASE</td>
     <td>The postgres database to connect to</td>
+    <td><code>ubat</code></td>
 </tr>
 <tr>
     <td>COL_POSTGRES_SCHEMA</td>
-    <td>The postgres database schema to use (defaults to public)</td>
-</tr>
-<tr>
-    <td>COL_POSTGRES_PASSWORD</td>
-    <td>The postgres user password</td>
+    <td>The postgres database schema to use</td>
+    <td><code>public</code></td>
 </tr>
 <tr>
     <td>COL_POSTGRES_PORT</td>
     <td>The postgres connection port</td>
+    <td><code>5432</code></td>
 </tr>
 <tr>
     <td>COL_POSTGRES_HOST</td>
     <td>The postgres host address</td>
+    <td><code>localhost</code></td>
 </tr>
 </table>
+
+### Frontend {id="frontend"}
+
+The frontend is built using nextjs 13, and it the main way you interact with the service.
+
+#### Environment Variables {id="frontend-env-vars"}
+
+<table id="front-environment-variables" style="header-row">
+<tr>
+    <td>Variable</td>
+    <td>Description</td>
+    <td>Default</td>
+</tr>
+<tr>
+    <td>EXTERNAL_ADDRESS</td>
+    <td>The address of the spa. E.g.: <code>https://ubat.company</code></td>
+    <td><code>https://localhost:3000</code></td>
+</tr>
+</table>
+
+### Cli
+
+For information about the CLI, go to the [CLI documentation page](run-the-cli.md)
 
 ## Installing {id="installing"}
 
 > During private beta all scripts will be provided by our team and are subject to change!
 
-> The usage of docker volumes is discouraged due to potentially causing data losses
+The deployment of the %product% is done using a docker compose file called `docker-compose-all.yaml`.
+
+This compose file provides all the necessary images to run the application in a single package.
+
+All the containers run as `unprivileged` and should not be allowed to run as root.
+
+### Configuring the host machine
+
+First you need to make sure docker is installed in the target machine.
+
+You can check out how to install docker following
+the [official docker documentation](https://docs.docker.com/engine/install/).
+
+#### Create storage directories
+
+Although %product% is a stateless application, it uses `postgresql` and `rabbitmq` to store and transfer information
+about the analysis, and they both require volumes to store information.
+
+> The usage of docker volumes is discouraged due to risk of data loss
 > {style="warning"}
 
+##### Create data directory
 
-The deployment of the %product% is divided into two docker compose files 
-or a single compose with all the necessary components.
+- On windows create a folder on the `C:\` drive called `data`.
 
-- `docker-compose-infrastructure.yaml`
-- `docker-compose.yaml`
-- `docker-compose-all.yaml`
+<code-block>
+    mkdir C:\data
+</code-block>
 
-The `docker-compose-infrastructure.yaml` describes both `rabbitmq` and `postgresql` environments.
-This file will require a few changes!
+- On Linux create a folder on the `/`(root) called `data`.
+
+<code-block>
+    sudo mkdir /data 
+</code-block>
+
+#### Configure postgres
+
+On Windows:
+<procedure>
+<step>
+    Create a folder in the <code>C:\data</code> directory called <code>pg</code>
+    <code-block>
+        mkdir C:\data\pg
+    </code-block>
+</step>
+<step>
+    Set the <code>ubat-postgres</code> service volume in the docker compose file
+    <code-block>
+    volumes:
+    - C:\data\pg:/bitnami/postgresql
+    </code-block>
+</step>
+</procedure>
+
+On Linux and OSX:
+<procedure>
+<step>
+    Create a folder in the <code>/data</code> directory called <code>pg</code>
+    <code-block>
+        mkdir /data\pg
+    </code-block>
+</step>
+<step>
+    Set the <code>ubat-postgres</code> service volume in the docker compose file
+    <code-block>
+    volumes:
+    - /data/pg:/bitnami/postgresql
+    </code-block>
+</step>
+</procedure>
+
+##### Configure postgres password
 
 <procedure>
-<p>Configuring the host</p>
-<step>Install a compatible container runtime on the host</step>
-<step>Create the <code>ubat</code> container network with <code> docker network create ubat </code></step>
-<step>Create <code>postgresql</code> and <code>rabbitmq</code> passwords</step>
-<step>Create a folder on the host to store <code>postgresql</code> data</step>
-<step>Update the <code>postgresql</code> container volume to the host path</step>
-<step>Create a folder on the host to store <code>rabbitmq</code> data</step>
-<step>Update the <code>rabbitmq</code> container volume to the host path</step>
-<step>Run the infrastructure docker compose file</step>
-<step>Finish the host configuration by <a anchor="configuring-infra-services"></a></step>
+<step>
+    Create a strong password for the <code>ubat-postgres</code> service
+</step>
+<step>
+    Update the <code>ubat-postgres</code> environment variable <code>POSTGRES_PASSWORD</code>
+    <code-block>
+        - POSTGRES_PASSWORD=
+    </code-block>
+</step>
+<step>
+    Update the <code>ubat-api</code> environment variable <code>COL_POSTGRES_PASSWORD</code>
+    <code-block>
+        - COL_POSTGRES_PASSWORD=
+    </code-block>
+</step>
 </procedure>
+
+#### Configure rabbitmq
+
+On Windows:
+<procedure>
+<step>
+    Create a folder in the <code>C:\data</code> directory called <code>mq</code>
+    <code-block>
+        mkdir C:\data\mq
+    </code-block>
+</step>
+<step>
+    Set the <code>ubat-rabbitmq</code> service volume in the docker compose file
+    <code-block>
+    volumes:
+    - C:\data\mq:/bitnami/rabbitmq/mnesia
+    </code-block>
+</step>
+</procedure>
+
+On Linux and OSX:
+<procedure>
+<step>
+    Create a folder in the <code>/data</code> directory called <code>mq</code>
+    <code-block>
+        mkdir /data\mq
+    </code-block>
+</step>
+<step>
+    Set the <code>ubat-rabbitmq</code> service volume in the docker compose file
+    <code-block>
+    volumes:
+    - /data/mq:/bitnami/rabbitmq/mnesia
+    </code-block>
+</step>
+</procedure>
+
+##### Configure rabbitmq password
+
+<procedure>
+<step>
+    Create a strong password for the <code>ubat-rabbitmq</code> service
+</step>
+<step>
+    Update the <code>ubat-rabbitmq</code> environment variable <code>RABBITMQ_PASSWORD</code>
+    <code-block>
+        - RABBITMQ_PASSWORD=
+    </code-block>
+</step>
+<step>
+    Update the <code>ubat-api</code> environment variable <code>COL_RABBITMQ_PASSWORD</code>
+    <code-block>
+        - COL_RABBITMQ_PASSWORD=
+    </code-block>
+</step>
+</procedure>
+
+#### Give directory access to the containers
+
+Since all containers run as `unprivileged`, you to allow the containers `read`, `write` and `execute`
+access to the newly created directories.
+
+- On Linux run the following commands
+
+<code-block>
+    sudo chown -R $user:docker /data 
+</code-block>
+<code-block>
+    sudo chmod -R u=rwx,go=rwx /data 
+</code-block>
+
+If there are security concerns or requirements, you can set the `UID` and `GID`
+on the docker compose service definition, and set the directories permissions accordingly.
+
+Example:
+<code-block>
+ubat-api:
+  image: docker.io/appoena/ubat-api:1.0.0-beta.1
+  container_name: ubat-api
+  user: 1001:1001 #add this
+</code-block> 
 
 > Verify all directories created are accessible by the containers
 > {style="warning"}
 
+### Run the docker compose
 
-### Configuring the infrastructure services {id="configuring-infra-services"}
+After finishing the configuration, you can run the docker compose file by using the command
 
-#### Configuring postgresql {id="configuring-postgresql"}
+<code-block>
+    docker compose up
+</code-block>
 
-Create the application postgresql user and run the migration scripts on the `postgresql` instance.
+During the first time the application starts, all the database migrations will be executed. If everything
+goes well, you should not see any errors, and you can stop the compose execution by pressing <code>crtl+c</code>.
 
-### Configuring rabbitmq {id="configuring-rabbitmq"}
+After that you can run the same command with the <code>-d</code> flag, so that the containers outputs are not attached to your
+terminal.
+<code-block>
+    docker compose up -d
+</code-block>
 
-Create the application user on the rabbitmq broker and give the write user access to the `/` virtual host.
+#### Troubleshooting
+
+If you see any error in the log output during the startup, verify if the directories are with the correct
+permissions and that the containers have `read`, `write` and `execute` permissions on them.
+
+Also check if the created passwords were correctly set.
+
+

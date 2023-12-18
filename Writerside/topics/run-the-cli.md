@@ -1,4 +1,4 @@
-<title>Run the CLI</title>
+<title>The CLI</title>
 
 The %product% cli is the part responsible for collecting statically defined log lines in your code base. It queries
 the code base and sends only log lines to the api to be analysed.
@@ -23,6 +23,10 @@ The cli is available for `amd64 (64-bit x86)` and `Arm v8` architectures.
 <tr>
     <td>Linux</td>
     <td>64-bit x86 / MUSL 64-bit x86 and Arm64 / Bionic Arm64</td>
+</tr>
+<tr>
+    <td>OSX</td>
+    <td>64-bit x86 / Arm64</td>
 </tr>
 </table>
 
