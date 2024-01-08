@@ -7,7 +7,6 @@
         <primary-color>dracula</primary-color>
         <header-logo>ubat.svg</header-logo>
         <custom-favicons>ubat.svg</custom-favicons>
-        <product-web-url>https://appoena.github.io/ubat-docs/</product-web-url>
     </variables>
     <build-profile instance="u1">
         <variables>
