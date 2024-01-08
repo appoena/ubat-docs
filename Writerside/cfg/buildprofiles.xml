@@ -6,7 +6,7 @@
         <color-preset>vivid</color-preset>
         <primary-color>dracula</primary-color>
         <header-logo>ubat.svg</header-logo>
-        <custom-favicons>ubat.svg</custom-favicons>
+        <custom-favicons>favicon16x16.png,favicon32x32.png,apple-touch-icon.png,android-chrome-192x192.png,android-chrome-512x512.png</custom-favicons>
     </variables>
     <build-profile instance="u1">
         <variables>
