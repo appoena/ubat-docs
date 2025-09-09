@@ -1,7 +1,7 @@
 # Welcome to %product% 
 
 
-> This product is in private beta
+> This product is in beta
 > {style="note"}
 
 
@@ -19,7 +19,7 @@ practices like:
 These are just a few of the problems that can be solved easily with the help of %product%.
 
 With %product% you can identify code changes that deviate from the logging standards of your
-organization, or help you create one that is consistent across applications and languages.
+ organization or help you create one that is consistent across applications and languages.
 
 ### %product% also helps with {id="product-also-helps-with"}
 
@@ -34,7 +34,7 @@ organization, or help you create one that is consistent across applications and 
 apply rules that evaluate the deviation of a log line or runtime event over the specification.
 
 By combining static code analysis, runtime log event analysis and a custom AI model, %product%
-is able to suggest code fixes, log output format, warn on privacy violations and more.
+is able to suggest code fixes, log output formats, warn on privacy violations and more.
 
 
 ## Start using %product% {id="start-using-ubat"}

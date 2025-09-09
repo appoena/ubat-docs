@@ -5,7 +5,7 @@ the code base and sends only log lines to the api to be analysed.
 
 The cli is available for `amd64 (64-bit x86)` and `Arm v8` architectures.
 
-> During private beta all cli binaries will be provided by our team and are subject to change!
+> During beta all cli binaries will be provided by our team and are subject to change!
 
 [comment]: <> (Download the cli for your platform at )
 
@@ -74,10 +74,14 @@ The cli is available for `amd64 (64-bit x86)` and `Arm v8` architectures.
     <td><code>--quiet</code></td>
     <td>Enables quite mode</td>
 </tr>
+<tr>
+    <td><code>--dry</code></td>
+    <td>Writes the output to a JSON file.</td>
+</tr>
 </table>
 
 ## How to use it?
 
-You can hook the cli into one of your CI/CD pipeline stage or run it locally on your machine.
+You can hook the cli into one of your CI/CD pipeline stages or run it locally on your machine.
 
 `ubat lookup --source <your-repo-path> --api-url https://<your-host-address> --api-key <your-api-key>`  

@@ -5,7 +5,8 @@
     <variables>
         <color-preset>vivid</color-preset>
         <primary-color>dracula</primary-color>
-        <header-logo>ubat.svg</header-logo>
+        <header-logo>ubat-black.png</header-logo>
+        <custom-favicons>favicon-32x32.png</custom-favicons>
     </variables>
     <build-profile instance="u1">
         <variables>

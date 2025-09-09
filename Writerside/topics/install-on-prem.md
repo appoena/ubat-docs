@@ -19,7 +19,7 @@ application.
 </tr>
 <tr>
     <td>Postgresql</td>
-    <td>9.2+</td>
+    <td>17+</td>
 </tr>
 <tr>
     <td>Rabbitmq</td>
@@ -67,7 +67,7 @@ Host outbound traffic ports:
 
 The inbound traffic flows through three different ports. These can be changed in the docker compose file.
 
-Default host inbound traffic ports:
+Default hosts inbound traffic ports:
 
 - `3000`
 - `7001`
@@ -82,7 +82,7 @@ Default host inbound traffic ports:
 ### Backend {id="backend"}
 
 The backend is built using dotnet 7, and it is responsible for executing the analysis and compiling the results into
-meaningful report.
+a meaningful report.
 
 #### Environment Variables {id="backend-env-vars"}
 
@@ -93,65 +93,80 @@ meaningful report.
     <td>Default</td>
 </tr>
 <tr>
-    <td>COL_RABBITMQ_USER</td>
-    <td>The rabbitmq user (requires write on vhost)</td>
+    <td>COL__RABBITMQ__USER</td>
+    <td>The rabbitmq user (requires writing on vhost)</td>
     <td><code>rabbitmq</code></td>
 </tr>
 <tr>
-    <td>COL_RABBITMQ_PASSWORD</td>
+    <td>COL__RABBITMQ__PASSWORD</td>
     <td>The rabbitmq user password</td>
     <td>-</td>
 </tr>
 <tr>
-    <td>COL_RABBITMQ_VHOST</td>
+    <td>COL__RABBITMQ__VHOST</td>
     <td>The rabbitmq virtual host</td>
     <td><code>/</code></td>
 </tr>
 <tr>
-    <td>COL_RABBITMQ_PORT</td>
+    <td>COL__RABBITMQ__PORT</td>
     <td>The rabbitmq port</td>
     <td><code>5672</code></td>
 </tr>
 <tr>
-    <td>COL_RABBITMQ_HOST</td>
+    <td>COL__RABBITMQ__HOST</td>
     <td>The rabbitmq host address</td>
     <td><code>localhost</code></td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_USER</td>
+    <td>COL__POSTGRES__USER</td>
     <td>The postgres user</td>
     <td><code>postgres</code></td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_PASSWORD</td>
+    <td>COL__POSTGRES__PASSWORD</td>
     <td>The postgres user password</td>
     <td>-</td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_DATABASE</td>
+    <td>COL__POSTGRES__DATABASE</td>
     <td>The postgres database to connect to</td>
     <td><code>ubat</code></td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_SCHEMA</td>
+    <td>COL__POSTGRES__SCHEMA</td>
     <td>The postgres database schema to use</td>
     <td><code>public</code></td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_PORT</td>
+    <td>COL__POSTGRES__PORT</td>
     <td>The postgres connection port</td>
     <td><code>5432</code></td>
 </tr>
 <tr>
-    <td>COL_POSTGRES_HOST</td>
+    <td>COL__POSTGRES__HOST</td>
     <td>The postgres host address</td>
     <td><code>localhost</code></td>
+</tr>
+<tr>
+    <td>UBAT_SKIP_DB_MIGRATIONS</td>
+    <td>Enables/Disables database migrations deployments</td>
+    <td><code>false</code></td>
+</tr>
+<tr>
+    <td>UBAT_SKIP_DB_SEEDING</td>
+    <td>Enables/Disables database seeding</td>
+    <td><code>false</code></td>
+</tr>
+     <tr>
+    <td>UBAT_DEBUG_MIGRATIONS</td>
+    <td>Enables/Disables debug log level during migrations deployment</td>
+    <td><code>false</code></td>
 </tr>
 </table>
 
 ### Frontend {id="frontend"}
 
-The frontend is built using nextjs 13, and it the main way you interact with the service.
+The frontend is built using Next.js 15, and it is the main way you interact with the service.
 
 #### Environment Variables {id="frontend-env-vars"}
 
@@ -174,7 +189,7 @@ For information about the CLI, go to the [CLI documentation page](run-the-cli.md
 
 ## Installing {id="installing"}
 
-> During private beta all scripts will be provided by our team and are subject to change!
+> During beta all scripts will be provided by our team and are subject to change!
 
 The deployment of the %product% is done using a docker compose file called `docker-compose-all.yaml`.
 
@@ -254,13 +269,13 @@ On Linux and OSX:
     Create a strong password for the <code>ubat-postgres</code> service
 </step>
 <step>
-    Update the <code>ubat-postgres</code> environment variable <code>POSTGRES_PASSWORD</code>
+    Update the <code>ubat-postgres</code> container environment variable <code>POSTGRES_PASSWORD</code>
     <code-block>
         - POSTGRES_PASSWORD=
     </code-block>
 </step>
 <step>
-    Update the <code>ubat-api</code> environment variable <code>COL_POSTGRES_PASSWORD</code>
+    Update the <code>ubat-api</code> container environment variable <code>COL_POSTGRES_PASSWORD</code>
     <code-block>
         - COL_POSTGRES_PASSWORD=
     </code-block>
@@ -310,13 +325,13 @@ On Linux and OSX:
     Create a strong password for the <code>ubat-rabbitmq</code> service
 </step>
 <step>
-    Update the <code>ubat-rabbitmq</code> environment variable <code>RABBITMQ_PASSWORD</code>
+    Update the <code>ubat-rabbitmq</code> container environment variable <code>RABBITMQ_PASSWORD</code>
     <code-block>
         - RABBITMQ_PASSWORD=
     </code-block>
 </step>
 <step>
-    Update the <code>ubat-api</code> environment variable <code>COL_RABBITMQ_PASSWORD</code>
+    Update the <code>ubat-api</code> container environment variable <code>COL_RABBITMQ_PASSWORD</code>
     <code-block>
         - COL_RABBITMQ_PASSWORD=
     </code-block>
@@ -325,7 +340,7 @@ On Linux and OSX:
 
 #### Give directory access to the containers
 
-Since all containers run as `unprivileged`, you to allow the containers `read`, `write` and `execute`
+Since all containers run as `unprivileged`, you are to allow the containers `read`, `write` and `execute`
 access to the newly created directories.
 
 - On Linux run the following commands
@@ -338,7 +353,7 @@ access to the newly created directories.
 </code-block>
 
 If there are security concerns or requirements, you can set the `UID` and `GID`
-on the docker compose service definition, and set the directories permissions accordingly.
+on the docker compose service definition and set the directory's permissions accordingly.
 
 Example:
 <code-block>
@@ -362,7 +377,8 @@ After finishing the configuration, you can run the docker compose file by using 
 During the first time the application starts, all the database migrations will be executed. If everything
 goes well, you should not see any errors, and you can stop the compose execution by pressing <code>crtl+c</code>.
 
-After that you can run the same command with the <code>-d</code> flag, so that the containers outputs are not attached to your
+After that you can run the same command with the <code>-d</code> flag, so that the container's outputs are not attached
+to your
 terminal.
 <code-block>
     docker compose up -d
